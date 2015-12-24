@@ -1,6 +1,6 @@
 CROSS_TARGET=i686-elf
 
-OBJS= _init.s.o kernel.o
+OBJS= _init.s.o kstring.o vga.o kernel.o
 
 CC=$(CROSS_TARGET)-gcc
 LD=$(CROSS_TARGET)-gcc
@@ -9,8 +9,8 @@ ASM=$(CROSS_TARGET)-as
 INCLUDE=../include
 LD_FILE=linker.ld
 
-CC_FLAGS=-I$(INCLUDE) -Wall -Wextra -ffrestanding -std=c11
-LD_FLAGS=-ffrestanding -nostdlib
+CC_FLAGS=-I$(INCLUDE) -Wall -Wextra -ffreestanding -std=gnu99 -nostdlib
+LD_FLAGS=-ffreestanding -nostdlib
 
 .PHONY: all clean
 

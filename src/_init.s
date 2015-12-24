@@ -1,10 +1,10 @@
 # Declare multiboot constants
 # TODO: Change to Multiboot2 spec
 .set ALIGN,   1<<0
-.set MEMINFO. 1<<1
+.set MEMINFO, 1<<1
 .set FLAGS,   ALIGN | MEMINFO
-.set MAGIC    0x1BADBOO2
-.set CHECKSUM -(MAGIC + FLAGS)
+.set MAGIC,    0x1BADB002
+.set CHECKSUM, -(MAGIC + FLAGS)
 
 #Declare the multiboot section
 .section .multiboot
