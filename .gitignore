@@ -33,3 +33,6 @@
 
 #VIM swapfiles
 *.swp
+
+#iso files
+*.iso
