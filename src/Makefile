@@ -9,7 +9,7 @@ ASM=$(CROSS_TARGET)-as
 INCLUDE=../include
 LD_FILE=linker.ld
 
-CC_FLAGS=-I$(INCLUDE) -c -Wall -Wextra -ffreestanding -std=gnu99 -nostdlib
+CC_FLAGS=-I$(INCLUDE) -c -Wall -Wextra -ffreestanding -std=gnu99
 LD_FLAGS=-ffreestanding -nostdlib
 
 .PHONY: all clean
