@@ -27,7 +27,15 @@ void vga_putat(char c, uint8_t color, size_t x, size_t y) {
 }
 
 void term_putchar(char c) {
-  vga_putat(c, term_color, term_x, term_y);
+  switch(c) {
+    case '\n': //Line feed '\n'
+      term_y++;
+    case '\r': //Carrage Return
+      term_x = -1; //simplify via overflow to produce the correct alignment
+      break;
+    default:
+      vga_putat(c, term_color, term_x, term_y);
+  }
   if( ++term_x == VGA_WIDTH ) {
     term_x = 0;
     if( ++term_y == VGA_HEIGHT ) {
