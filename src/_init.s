@@ -29,8 +29,8 @@ _start:
   pushl $0
   popf  #clear the flag register
 
-  pushl %ebx
-  pushl %eax  #Push the multiboot info and checksum to the stack
+  pushl %eax
+  pushl %ebx  #Push the multiboot info and checksum to the stack
   call kernel_init  #Call the C-code for our kernel with the stack parameters.
 
   cli #Jump into an inifinite loop should our kernel_main return
