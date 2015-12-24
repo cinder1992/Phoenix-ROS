@@ -1,6 +1,8 @@
 CROSS_TARGET = i686_elf
 
-.PHONY: clean run-qemu
+.PHONY: all clean run-qemu
+
+all: kernel.elf phoenix.iso
 
 clean:
 	rm -fvr isodir
