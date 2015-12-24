@@ -1,6 +1,8 @@
 #ifndef _VGA_H
 #define _VGA_H
 
+#include <stddef.h>
+#include <stdint.h>
 #define VGA_HEIGHT 25
 #define VGA_WIDTH 80
 #define VGA_COLORWORD(f,b) (f | b << 4)

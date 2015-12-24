@@ -1,3 +1,4 @@
+#include <kstring.h>
 #include <stddef.h>
 
 //TODO: Sanitize this with paging in case our string overruns.
