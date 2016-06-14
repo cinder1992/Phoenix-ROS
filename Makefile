@@ -11,7 +11,7 @@ ASM=$(CROSS_TARGET)-as
 
 LD_FILE=./src/linker.ld
 
-OBJS=kstring.o vga.o kernel.o regdump.s.o _start.s.o
+OBJS=kstring.o kserial.o vga.o kernel.o regdump.s.o _start.s.o
 
 CC_FLAGS= -I$(INCLUDE) -c -O$(OPTIMISE) -Wall -Wextra -ffreestanding -std=gnu99
 LD_FLAGS= -ffreestanding -nostdlib -O$(OPTIMISE)
@@ -37,7 +37,7 @@ phoenix.iso:
 	grub-mkrescue -o $@ isodir
 
 run-qemu:
-	qemu-system-i386 -cdrom phoenix.iso
+	qemu-system-i386 -cdrom phoenix.iso -serial stdio
 
 %.o: %.c
 	$(CC) $(CC_FLAGS) $^ -o $@
