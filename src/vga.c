@@ -1,11 +1,10 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <vga.h>
-#include <kstring.h> //TODO: Replace with libc string.h
-#include <kserial.h>
+#include <string.h>
+#include <stdio.h>
 
 void term_init() {
-  init_serial(); //TODO: Standardise all _init names
   term_x = 0;
   term_y = 0;
   term_color = VGA_COLORWORD(COLOR_LIGHT_GREY, COLOR_BLACK);
@@ -29,7 +28,6 @@ void vga_putat(char c, uint8_t color, size_t x, size_t y) {
 }
 
 void term_putchar(char c) { //TODO: Move terminal functions to their own file.
-  serial_putchar(c); //Push the character onto the serial buffer in case of horrible VGA corruption!
   switch(c) {
     case '\n': //Line feed '\n'
       term_y++;
@@ -52,4 +50,3 @@ void term_putstr(const char* str) {
   for( size_t i = 0; i < len; i++ )
     term_putchar(str[i]);
 }
-

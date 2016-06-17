@@ -1,9 +1,9 @@
 CROSS_TARGET = i686-elf
 OPTIMISE=2
-INCLUDE=./src/inc
-ASMINCLUDE=$(INCLUDE)/x86
+INCLUDE=./include
+ARCH=x86
 
-VPATH=src:src/x86
+VPATH=src:src/$(ARCH):src/arch/$(ARCH)
 
 CC=$(CROSS_TARGET)-gcc
 LD=$(CROSS_TARGET)-gcc
@@ -11,7 +11,7 @@ ASM=$(CROSS_TARGET)-as
 
 LD_FILE=./src/linker.ld
 
-OBJS=kstring.o kserial.o vga.o kernel.o regdump.s.o _start.s.o
+OBJS=string.o stdio.o serial.o kernel.o regdump.S.o _init.S.o
 
 CC_FLAGS= -I$(INCLUDE) -c -O$(OPTIMISE) -Wall -Wextra -ffreestanding -std=gnu99
 LD_FLAGS= -ffreestanding -nostdlib -O$(OPTIMISE)
@@ -42,5 +42,5 @@ run-qemu:
 %.o: %.c
 	$(CC) $(CC_FLAGS) $^ -o $@
 
-%.s.o: %.s
-	$(ASM) -I$(ASMINCLUDE) $^ -o $@
+%.S.o: %.S
+	$(ASM) $^ -o $@
