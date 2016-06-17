@@ -1,5 +1,5 @@
 CROSS_TARGET = i686-elf
-OPTIMISE=2
+OPTIMISE=0
 INCLUDE=./include
 ARCH=x86
 
@@ -37,7 +37,7 @@ phoenix.iso:
 	grub-mkrescue -o $@ isodir
 
 run-qemu:
-	qemu-system-i386 -cdrom phoenix.iso -serial stdio
+	qemu-system-x86_64 -cdrom phoenix.iso -serial stdio
 
 %.o: %.c
 	$(CC) $(CC_FLAGS) $^ -o $@

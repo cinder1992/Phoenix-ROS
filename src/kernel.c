@@ -37,9 +37,8 @@ void kernel_init(multiboot_info_t* mboot, unsigned long magic) {
     fprintf(s, "Expected: 0x2BADB002, Got: 0x%08x\n", magic);
     return;
   }
-
-  fprintf(s, "Hello, kernel!\n");
-  fprintf(s, "I'm a new line!\n");
   _asm_regdump();
   fprintf(s, "\nThat was a test crash, Everything looks good!\n");
+  //fprintf(s, "frprintf test: %i, %i, %i\n", 0xFF, 8, 12);
+  //fprintf(s, "Hanging...");
 }
