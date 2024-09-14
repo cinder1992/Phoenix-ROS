@@ -36,3 +36,6 @@
 
 #iso files
 *.iso
+
+#OVMF firmware
+*.fd
