@@ -1,53 +1,48 @@
-#include <vga.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <multiboot.h>
+#include <stdbool.h>
+#include <platform.h>
+#include <limine.h>
+#define limine_request_base(s) \
+	__attribute__((used, section(#s))) static volatile
+#define limine_start_marker \
+	limine_request_base(.requests.start) LIMINE_REQUESTS_START_MARKER
+#define limine_end_marker \
+	limine_request_base(.requests.end) LIMINE_REQUESTS_END_MARKER
+#define limine_request \
+	limine_request_base(.requests)
 
-char* k_l2h(unsigned long, char*);
-void _asm_regdump();
+limine_start_marker;
+limine_request LIMINE_BASE_REVISION(2);
+limine_request struct limine_framebuffer_request framebuffer_request = {
+	.id = LIMINE_FRAMEBUFFER_REQUEST,
+	.revision = 0
+};
+limine_end_marker;
 
-void kprint_crashdump( //I wish I could make this smaller
-    unsigned long EFLAGS,
-    unsigned long EDI,
-    unsigned long ESI,
-    unsigned long EBP,
-    unsigned long ESP,
-    unsigned long EBX,
-    unsigned long EDX,
-    unsigned long ECX,
-    unsigned long EAX) {
-  char buf[16];
-  term_putstr("CRASH CONDITION DETECTED!\n\n");
-  term_putstr("EAX: 0x"); term_putstr(k_l2h(EAX, buf)); term_putstr("  EBX: 0x"); term_putstr(k_l2h(EBX, buf));
-  term_putstr("  ECX: 0x"); term_putstr(k_l2h(ECX, buf)); term_putstr("  EDX: 0x"); term_putstr(k_l2h(EDX, buf)); term_putchar('\n');
-  term_putstr("ESP: 0x"); term_putstr(k_l2h(ESP, buf)); term_putstr("  EBP: 0x"); term_putstr(k_l2h(EBP, buf));
-  term_putstr("  ESI: 0x"); term_putstr(k_l2h(ESI, buf)); term_putstr("  EDI: 0x"); term_putstr(k_l2h(EDI, buf)); term_putchar('\n');
-  term_putstr("EFLAGS: 0x"); term_putstr(k_l2h(EFLAGS, buf)); term_putchar('\n');
-}
+void _start(void) {
+	//code borrowed from Limine barebones
+	// Ensure the bootloader actually understands our base revision (see spec).
+    if (LIMINE_BASE_REVISION_SUPPORTED == false) {
+        hcf();
+    }
 
-char* k_l2h(unsigned long val, char* buf) {
-  unsigned long tempval;
-  tempval = val;
-  const char* lookup = "0123456789ABCDEF";
-  for( size_t i = 0; i < 8; i++ ) {
-    buf[i] = lookup[ (tempval & 0xF0000000) >> 28 ];
-    buf[i+1] = '\0';
-    tempval = tempval << 4;
-  }
-  return buf;
-}
+    // Ensure we got a framebuffer.
+    if (framebuffer_request.response == NULL
+     || framebuffer_request.response->framebuffer_count < 1) {
+        hcf();
+    }
 
-void kernel_init(multiboot_info_t* mboot, unsigned long magic) {
-  term_init();
-  char buf[16];
-  if(magic != 0x2BADB002) {
-    term_putstr("There was a bootloader error, please reboot using GRUB\n"); //magical debug code!
-    term_putstr("Expected: 0x2BADB002, Got: 0x"); term_putstr(k_l2h(magic, buf));
-    return;
-  }
+    // Fetch the first framebuffer.
+    struct limine_framebuffer *framebuffer = framebuffer_request.response->framebuffers[0];
 
-  term_putstr("Hello, kernel!\n");
-  term_putstr("I'm a new line!\n");
-  _asm_regdump();
-  term_putstr("\nThat was a test crash, Everything looks good!\n");
+    // Note: we assume the framebuffer model is RGB with 32-bit pixels.
+    for (size_t i = 0; i < 100; i++) {
+        volatile uint32_t *fb_ptr = framebuffer->address;
+        fb_ptr[i * (framebuffer->pitch / 4) + i] = 0xffffff;
+    }
+
+    // We're done, just hang...
+    hcf();
+
 }

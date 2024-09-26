@@ -39,3 +39,6 @@
 
 #OVMF firmware
 *.fd
+
+#build directory
+build/
